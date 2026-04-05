@@ -4,6 +4,7 @@ import requests
 from typing import Dict, Any, List
 from config import settings
 logger = logging.getLogger(__name__)
+
 class AWSClient:
     def __init__(self, region: str = None):
         self.region = region or settings.AWS_REGION
@@ -47,6 +48,7 @@ class AWSClient:
         except Exception as e:
             logger.error(f"Unexpected error: {str(e)}")
             return {"error": str(e)}
+        
     def get_caller_identity(self) -> Dict[str, Any]:
         res = self._call_api("ping")
         if "error" in res:

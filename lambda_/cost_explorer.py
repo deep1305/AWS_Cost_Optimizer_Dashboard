@@ -21,6 +21,7 @@ def get_cost_breakdown(days: int = 30) -> dict:
                 by_service.append({"service": group["Keys"][0], "cost": round(amount, 4)})
                 total_cost += amount
     by_service.sort(key=lambda x: x["cost"], reverse=True)
+    
     daily_resp = ce.get_cost_and_usage(
         TimePeriod={"Start": str(start_date), "End": str(end_date)},
         Granularity="DAILY",

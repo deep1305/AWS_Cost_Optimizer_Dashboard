@@ -26,6 +26,7 @@ def get_rds_instances(region: str = "us-east-1") -> list:
         "multi_az": db.get("MultiAZ", False), "storage_gb": db.get("AllocatedStorage", 0),
         "service": "RDS",
     } for db in rds.describe_db_instances().get("DBInstances", [])]
+
 def get_s3_buckets() -> list:
     s3 = boto3.client("s3")
     buckets = []
@@ -118,6 +119,7 @@ def get_nat_gateways(region: str = "us-east-1") -> list:
         "state": n["State"],
         "service": "NAT Gateway", "region": region
     } for n in ec2.describe_nat_gateways().get("NatGateways", [])]
+
 def get_all_services(region: str = "us-east-1") -> dict:
     results = {"EC2": [], "RDS": [], "S3": [], "Lambda": [], "errors": {}}
     fetchers = {
