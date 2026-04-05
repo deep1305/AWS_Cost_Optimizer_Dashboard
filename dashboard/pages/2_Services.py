@@ -337,7 +337,7 @@ with tabs[4]:
     else:
         df_ecs = pd.DataFrame([{
             "Cluster Name": c["name"],
-            "Status": state_badge(c["state"]),
+            "Status": state_badge(c["status"]),
             "Running Tasks": c["running_tasks"],
             "Pending Tasks": c["pending_tasks"],
             "Active Services": c["active_services"],
