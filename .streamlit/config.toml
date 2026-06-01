@@ -1,3 +1,4 @@
+# Streamlit UI defaults for the AWS Cost Optimizer dashboard.
 [theme]
 base = "dark"
 primaryColor = "#FF9900"

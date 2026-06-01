@@ -1,6 +1,7 @@
 # ==========================================
 # Environment & Secrets
 # ==========================================
+# Keep local credentials and generated files out of GitHub.
 .env
 *.env
 .env.*
