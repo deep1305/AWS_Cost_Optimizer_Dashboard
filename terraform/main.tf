@@ -66,10 +66,10 @@ resource "aws_iam_policy" "lambda_policy" {
         Resource = "*"
       },
       {
-        Effect   = "Allow"
-        Action   = ["s3:ListAllMyBuckets", "s3:GetBucketLocation", "s3:ListBucket",
-                    "s3:DeleteObject", "s3:DeleteObjectVersion", "s3:DeleteBucket",
-                    "s3:GetBucketLocation", "s3:ListBucketVersions"]
+        Effect = "Allow"
+        Action = ["s3:ListAllMyBuckets", "s3:GetBucketLocation", "s3:ListBucket",
+          "s3:DeleteObject", "s3:DeleteObjectVersion", "s3:DeleteBucket",
+        "s3:GetBucketLocation", "s3:ListBucketVersions"]
         Resource = "*"
       },
       {
@@ -79,7 +79,7 @@ resource "aws_iam_policy" "lambda_policy" {
       },
       {
         Effect   = "Allow"
-        Action   = ["ecs:ListClusters", "ecs:DescribeClusters"]
+        Action   = ["ecs:ListClusters", "ecs:DescribeClusters", "ecs:DeleteCluster"]
         Resource = "*"
       },
       {
@@ -135,8 +135,8 @@ resource "aws_lambda_function" "cost_optimizer" {
 
   environment {
     variables = {
-      ENVIRONMENT                 = var.environment
-      AWS_DEFAULT_REGION_OVERRIDE = var.aws_region
+      ENVIRONMENT        = var.environment
+      AWS_DEFAULT_REGION = var.aws_region
     }
   }
 

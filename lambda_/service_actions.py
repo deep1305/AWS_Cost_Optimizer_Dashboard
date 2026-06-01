@@ -26,6 +26,16 @@ def delete_lambda(function_name: str, region: str = "us-east-1") -> dict:
     lam = boto3.client("lambda", region_name=region)
     lam.delete_function(FunctionName=function_name)
     return {"success": True, "function": function_name, "action": "deleted"}
+def delete_ecs_cluster(cluster_name: str, region: str = "us-east-1") -> dict:
+    ecs = boto3.client("ecs", region_name=region)
+    resp = ecs.delete_cluster(cluster=cluster_name)
+    cluster = resp.get("cluster", {})
+    return {
+        "success": True,
+        "cluster": cluster_name,
+        "status": cluster.get("status", "INACTIVE"),
+        "action": "deleting",
+    }
 def empty_and_delete_s3_bucket(bucket_name: str) -> dict:
     s3 = boto3.resource("s3")
     bucket = s3.Bucket(bucket_name)

@@ -1,146 +1,166 @@
-# ☁️ AWS Cost Optimizer
+# ☁️ AWS Cost Optimizer Dashboard
 
-A **production-grade, teachable** AWS cost optimization dashboard built with Python. This project serves as a hands-on tutorial for integrating AWS SDKs, Streamlit, and AI-driven cost analysis into a single, cohesive web application.
+An AWS cost optimization dashboard powered by Streamlit, Terraform, Lambda, API Gateway, boto3, and an AI advisor. Monitor cloud spend, inspect active AWS resources, and trigger cost-saving actions from a clean web interface.
 
-| Layer | Technology |
-|-------|-----------|
-| Dashboard | Streamlit |
-| AWS SDK | boto3 (Python) |
-| AI Agent | LangChain + OpenAI GPT-4o |
-| Infrastructure (Optional) | Terraform |
-| Data Visualization | Plotly |
+## 🌟 Features
 
----
+- **Cost Analytics Dashboard**: View recent AWS spend, service-level breakdowns, and forecast-style charts
+- **AWS Resource Inventory**: List EC2, RDS, S3, Lambda, ECS, ElastiCache, and NAT Gateway resources
+- **Actionable Controls**: Stop/start EC2 and RDS, delete Lambda functions, S3 buckets, ECS clusters, ElastiCache clusters, and NAT Gateways
+- **AI Cost Advisor**: Uses LangChain and OpenAI to explain optimization opportunities in plain English
+- **Serverless Backend**: Deploys Python Lambda behind API Gateway using Terraform
+- **Interactive UI**: Streamlit frontend with Plotly visualizations and confirmation prompts for destructive actions
 
-## 🚀 Quick Start Guide
+## 🛠️ Tech Stack
 
-Follow these instructions to get the project running on your local machine.
+- **Frontend**: Streamlit
+- **Backend**: AWS Lambda + API Gateway
+- **Infrastructure**: Terraform
+- **AWS SDK**: boto3 / botocore
+- **AI Framework**: LangChain + OpenAI
+- **Charts**: Plotly
+- **Language**: Python 3.10+
 
-### 1. Prerequisites
-
-Before you begin, ensure you have the following installed:
-*   **Python 3.10+** (Required for Streamlit & LangChain)
-*   **AWS CLI** (Must be installed and configured. Run `aws configure` in your terminal to set your local AWS credentials)
-*   **OpenAI API Key** (Required for the AI Advisor feature)
-
-### 2. Install Dependencies
-
-Open your terminal, navigate to the project directory, and install the required Python packages:
-
-```powershell
-pip install -r requirements.txt
-```
-
-### 3. Environment Variables (The `.env` File)
-
-The project relies on a `.env` file to securely load your API keys and configuration settings. 
-
-**Instruction:** Create a new file in the root directory named exactly `.env` (with the dot in front) and copy-paste the template below into it.
+## 📁 Project Structure
 
 ```text
-# ==========================================
-# AWS Cost Optimizer — Environment Variables
-# ==========================================
-
-# 1. OpenAI API Key (Required for AI Advisor)
-# Replace 'sk-...' with your actual OpenAI API key.
-OPENAI_API_KEY=sk-your-openai-api-key-here
-
-# 2. AWS Settings (Optional)
-# By default, the app uses your machine's default AWS CLI profile.
-# You only need to change this if you want to force a specific region.
-AWS_REGION=us-east-1
-
-# 3. Application Settings
-# Change these to customize your dashboard's look and data pull.
-APP_TITLE=AWS Cost Optimizer
-COST_LOOKBACK_DAYS=30
+AWS-Cost-Optimizer-Dashboard/
+├── config/                 # Application settings loaded from environment variables
+│   └── settings.py
+├── dashboard/              # Streamlit frontend
+│   ├── app.py              # Dashboard home page
+│   ├── pages/
+│   │   ├── 2_Services.py   # AWS service inventory and actions
+│   │   └── 3_AI_Advisor.py # AI advisor chat page
+│   └── utils/
+│       ├── ai_agent.py     # LangChain-based cost advisor
+│       ├── aws_client.py   # API Gateway client wrapper
+│       └── cost_utils.py   # UI formatting helpers
+├── lambda_/                # Lambda backend source code
+│   ├── cost_explorer.py    # AWS Cost Explorer queries
+│   ├── handler.py          # Lambda request router
+│   ├── service_actions.py  # Stop, start, terminate, and delete actions
+│   └── services_inventory.py
+├── terraform/              # AWS infrastructure as code
+│   ├── main.tf
+│   ├── outputs.tf
+│   └── variables.tf
+├── requirements.txt
+└── README.md
 ```
 
-*Note: Never commit your `.env` file to GitHub! The `.gitignore` file should ensure it stays local.*
+## 🚀 Getting Started
 
-### 4. Run the Dashboard
+### Prerequisites
 
-Once your `.env` file is saved and dependencies are installed, launch the app:
+- Python 3.10 or higher
+- AWS CLI configured with credentials that can deploy Terraform resources
+- Terraform 1.5 or higher
+- OpenAI API key for the AI Advisor
 
-```powershell
-streamlit run dashboard/app.py
-```
+### Installation
 
-Your browser will automatically open to `http://localhost:8501`.
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/deep1305/AWS_Cost_Optimizer_Dashboard.git
+   cd AWS_Cost_Optimizer_Dashboard
+   ```
 
----
+2. **Create and activate a virtual environment**
+   ```bash
+   python -m venv .venv
+   .venv\Scripts\activate
+   ```
 
-## 📁 Project Structure & Architecture
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-This project is divided into distinct layers to separate infrastructure, backend logic, and frontend UI.
+4. **Deploy the backend**
+   ```bash
+   cd terraform
+   terraform init
+   terraform apply
+   ```
 
-```text
-Project -11 AWS Cost/
-├── .env                          # ⚠️ You create this! (See above)
-├── requirements.txt              # Python dependencies
-├── PROJECT_SEQUENCE_GUIDE.md     # Tutorial guide on file creation order
-├── config/
-│   └── settings.py               # Loads .env variables for the app
-├── lambda_/                      # Backend: AWS SDK interactions
-│   ├── cost_explorer.py          # Fetches billing data
-│   ├── services_inventory.py     # Lists running EC2, RDS, S3, etc.
-│   └── service_actions.py        # Logic to stop/terminate resources
-├── terraform/                    # Infrastructure: Deploying to AWS
-│   ├── main.tf                   # Provisions Lambda & API Gateway
-│   ├── variables.tf              # Terraform inputs
-│   └── outputs.tf                # Terraform outputs
-└── dashboard/                    # Frontend: Streamlit App
-    ├── app.py                    # Main Home Page (Charts & Metrics)
-    ├── pages/
-    │   ├── 2_Services.py         # Resource management (Stop/Delete)
-    │   └── 3_AI_Advisor.py       # AI Chat interface
-    └── utils/
-        ├── aws_client.py         # Bridge between UI and Lambda/Boto3
-        ├── cost_utils.py         # UI formatting helpers
-        └── ai_agent.py           # LangChain Tool & Agent definitions
-```
+5. **Copy the API Gateway URL**
+   ```bash
+   terraform output api_gateway_url
+   ```
 
----
+6. **Set up environment variables**
 
-## 📊 Dashboard Pages
+   Create a `.env` file in the project root:
+   ```env
+   OPENAI_API_KEY=sk-your-openai-api-key-here
+   OPENAI_MODEL=gpt-4o
+   AWS_REGION=us-east-1
+   APP_TITLE=AWS Cost Optimizer
+   COST_LOOKBACK_DAYS=30
+   API_GATEWAY_URL=https://your-api-id.execute-api.us-east-1.amazonaws.com/dev/optimize
+   ```
 
-1.  🏠 **Home (`app.py`)**: Displays your total AWS spend over the last 30 days (or custom range) with beautiful Plotly bar and line charts.
-2.  🖥️ **Services (`2_Services.py`)**: A management hub. View all running EC2 instances, databases, and buckets. You can click to get instant AI advice on specific resources, or use the destructive buttons (Stop/Terminate) to manage them.
-3.  🤖 **AI Advisor (`3_AI_Advisor.py`)**: A free-form chat interface. Ask the AI to analyze your entire AWS account and find cost-saving opportunities.
+7. **Run the dashboard**
+   ```bash
+   streamlit run dashboard/app.py
+   ```
 
----
+8. **Open your browser** to `http://localhost:8501`
 
-## 🤖 How the AI Advisor Works
+## 💡 Usage
 
-The AI Advisor isn't just a generic chatbot; it has **tools**. We use LangChain to give GPT-4o the ability to securely query your real AWS environment.
+Use the sidebar to choose an AWS region and refresh dashboard data.
 
-When you ask, *"How can I save money?"*, the AI runs the following tools invisibly:
-1.  `get_aws_cost_summary`: Reads your recent bill.
-2.  `get_ec2_instances` / `get_rds_instances`: Looks for idle or oversized compute.
-3.  `get_nat_gateways`: Checks for expensive, unused networking components.
+- Open the **Home** page to review total spend, service cost breakdowns, and trend charts
+- Open the **Services** page to inspect AWS resources and run approved stop/delete actions
+- Open the **AI Advisor** page to ask questions like *"Where can I reduce my AWS bill this month?"*
+- Use resource-specific advice buttons to get short recommendations for individual services
 
-It then synthesizes this actual data into actionable advice.
+## 🏗️ Terraform Deployment
 
----
+Terraform provisions the serverless backend used by the dashboard:
 
-## ⚠️ Safety Warnings for the Tutorial
-
-Because this dashboard connects to a real AWS account, the actions on the **Services** tab are live:
-*   **Stop vs Terminate EC2**: Stopping is like shutting down a computer (can be restarted). Terminating deletes it forever.
-*   **S3 Delete**: Deleting a bucket via the dashboard empties all files inside it first, then destroys the bucket. This is irreversible.
-*   **Always read the confirmation prompts!**
-
----
-
-## 🏗️ Terraform (Optional Remote Deployment)
-
-While you can run this purely locally using your `aws configure` credentials, the `terraform/` folder contains exactly what you need to deploy the `lambda_/` Python code as a serverless AWS Lambda backend.
-
-```powershell
+```bash
 cd terraform
 terraform init
+terraform plan
 terraform apply
 ```
 
-This will create an IAM Role, package your Python code, deploy the Lambda, and expose it via an API Gateway.
+The deployment creates:
+
+- IAM role and policy for the Lambda backend
+- Lambda function packaged from the `lambda_/` folder
+- API Gateway REST endpoint
+- CloudWatch log group
+
+After deployment, add the `api_gateway_url` output to your `.env` file as `API_GATEWAY_URL`.
+
+## 📊 How It Works
+
+1. **Dashboard Request**: Streamlit calls the API Gateway endpoint through `dashboard/utils/aws_client.py`
+2. **Lambda Routing**: `lambda_/handler.py` receives the action and routes it to the correct backend function
+3. **AWS Querying**: boto3 queries Cost Explorer, EC2, RDS, S3, Lambda, ECS, ElastiCache, and NAT Gateway APIs
+4. **Resource Actions**: Approved actions call AWS APIs to stop, start, terminate, or delete selected resources
+5. **AI Analysis**: LangChain sends selected cost/resource context to OpenAI for optimization guidance
+
+## ⚠️ Safety Notes
+
+This project can perform real actions in your AWS account.
+
+- **EC2 terminate** permanently deletes an instance
+- **S3 delete** empties bucket contents and deletes the bucket
+- **Lambda, ECS, ElastiCache, and NAT Gateway delete** actions remove live resources
+- Always review the confirmation prompt before running destructive actions
+- Use a sandbox AWS account while testing the dashboard
+
+## 🙏 Acknowledgments
+
+- Built with Streamlit, boto3, Terraform, LangChain, and OpenAI
+- Inspired by practical cloud cost optimization workflows
+- Designed as an end-to-end AWS, serverless, and AI engineering project
+
+---
+
+**Made for cloud engineers who want cleaner AWS bills**

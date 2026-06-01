@@ -95,6 +95,15 @@ def lambda_handler(event, context):
             for fn in fn_names:
                 results.append(service_actions.delete_lambda(fn, region=region))
             result = {"results": results}
+        elif action == "delete_ecs":
+            cluster_ids = body.get("cluster_ids", [])
+            results = []
+            for cid in cluster_ids:
+                if hasattr(service_actions, 'delete_ecs_cluster'):
+                    results.append(service_actions.delete_ecs_cluster(cid, region=region))
+                else:
+                    results.append({"error": "Not implemented in backend"})
+            result = {"results": results}
         elif action == "delete_elasticache":
             cluster_ids = body.get("cluster_ids", [])
             results = []

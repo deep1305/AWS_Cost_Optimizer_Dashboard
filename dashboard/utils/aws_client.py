@@ -102,6 +102,8 @@ class AWSClient:
         return self._call_api("delete_s3", {"bucket_name": bucket_name})
     def delete_lambda_function(self, function_name: str) -> Dict[str, Any]:
         return self._call_api("delete_lambda", {"function_names": [function_name]})
+    def delete_ecs_cluster(self, cluster_id: str) -> Dict[str, Any]:
+        return self._call_api("delete_ecs", {"cluster_ids": [cluster_id]})
     def delete_elasticache_cluster(self, cluster_id: str) -> Dict[str, Any]:
         return self._call_api("delete_elasticache", {"cluster_ids": [cluster_id]})
     def delete_nat_gateway(self, nat_gateway_id: str) -> Dict[str, Any]:
